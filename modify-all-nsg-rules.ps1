@@ -40,6 +40,7 @@ catch {
 
 $nsgall = Get-AzNetworkSecurityGroup 
 $updated = @()
+$out1 = @()
 foreach ($nsg1 in $nsgall) { 
 
     $rule2change = $nsg1.SecurityRules | Where-Object { ($_.Access -eq "Allow" -and $_.Direction -eq "Inbound") `
@@ -48,7 +49,7 @@ foreach ($nsg1 in $nsgall) {
 
     foreach ($rule in $rule2change) {
 
-Write-Host "Updating NSG: $($nsg1.name) `nRule name: $($rule.Name)" -foregroundcolor Yellow
+$out1 += "Updated NSG: $($nsg1.name) - Rule name: $($rule.Name)" 
 
         Set-AzNetworkSecurityRuleConfig -NetworkSecurityGroup $nsg1 `
             -Name $rule.Name `
@@ -68,3 +69,7 @@ Write-Host "Updating NSG: $($nsg1.name) `nRule name: $($rule.Name)" -foregroundc
    
 }
 
+if(!($out1 )){
+    Write-Output  "No NSG rules were updated"
+}
+Write-Output $out1 
